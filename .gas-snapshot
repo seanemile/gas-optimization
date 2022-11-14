@@ -1,2 +1,5 @@
-SampleContractTest:testFunc1() (gas: 534472)
-SampleContractTest:testFunc2() (gas: 534440)
+ArrayTest:testLoop() (gas: 6443)
+ArrayTest:testLoop1() (gas: 6514)
+ArrayTest:testLoop2() (gas: 6671)
+ArrayTest:testLoop3() (gas: 5316)
+Tip1Test:testTip1() (gas: 27548)
