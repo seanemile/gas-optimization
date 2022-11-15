@@ -274,23 +274,37 @@ via_ir=true optimization=200
 
 If needed, the value can be read from the verified contract source code. Savings are due to the compiler not having to create non-payable getter functions for deployment calldata, and not adding another entry to the method ID table)
 
+---
+
 ### Tip 16: Usage of UINT/INTS smaller than 32 bytes (256 bits) incurs overhead
 
 When using elements that are smaller than 32 bytes, your contract’s gas usage may be higher. This is because the EVM operates on 32 bytes at a time. Therefore, if the element is smaller than that, the EVM must use more operations in order to reduce the size of the element from 32 bytes to the desired size.)
 
+---
+
 ### Tip 17. ++I costs less gas than I++, especially when It's used in for-loops
+
+---
 
 ### Tip 18. Calling internal functions is cheaper
 
+---
+
 ### Tip 19. Calling internal functions is cheaper
+
+---
 
 ### Tip 20. uint\*(8/16/32..) vs uint256
 
 TheEVM run on 256 bits at a time thus using a unit\* it will firs be converted to unt256 and it cost extra gas)
 
+---
+
 ### Tip 21. AVOID CONTRACT EXISTENCE CHECKS BY USING SOLIDITY VERSION 0.8.10 OR LATER
 
 Prior to 0.8.10 the compiler inserted extra code, including EXTCODESIZE (700 gas), to check for contract existence for external calls. In more recent solidity versions, the compiler will not insert these checks if the external call has a return value)
+
+---
 
 ### Tip 21. Using ``boolean` for storage incurs overhead
 
@@ -299,6 +313,8 @@ Booleans are more expensive than uint256 or any type that takes up a full
 // slot's contents, replace the bits taken up by the boolean, and then write
 // back. This is the compiler's defense against contract upgrades and
 // pointer aliasing, and it cannot be disabled.) (Use uint256(1) and uint256(2) for true/false to avoid a Gwarmaccess (100 gas) for the extra SLOAD, and to avoid Gsset (20000 gas) when changing from ‘false’ to ‘true’, after having been ‘true’ in the past)
+
+---
 
 ### References:
 
