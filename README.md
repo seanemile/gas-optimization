@@ -93,13 +93,96 @@ contract Tip3b {
 
 ### Tip: 4. Upgrade at least 0.8.4
 
-Description:
+Using newer compiler versions and the optimizer gives gas
+optimizations and additional safety checks for free!
 
-Proof of Concept:
+The advantages of versions =0.8.\*= over =<0.8.0= are:
+
+- Safemath by default from =0.8.0= (can be more gas efficient than /some/
+  library based safemath).
+- [[https://blog.soliditylang.org/2021/03/02/saving-gas-with-simple-inliner/][Low level inliner]] from =0.8.2=, leads to cheaper runtime gas.
+  Especially relevant when the contract has small functions. For
+  example, OpenZeppelin libraries typically have a lot of small
+  helper functions and if they are not inlined, they cost an
+  additional 20 to 40 gas because of 2 extra =jump= instructions and
+  additional stack operations needed for function calls.
+- [[https://blog.soliditylang.org/2021/03/23/solidity-0.8.3-release-announcement/#optimizer-improvements][Optimizer improvements in packed structs]]: Before =0.8.3=, storing
+  packed structs, in some cases used an additional storage read
+  operation. After [[https://eips.ethereum.org/EIPS/eip-2929][EIP-2929]], if the slot was already cold, this
+  means unnecessary stack operations and extra deploy time costs.
+  However, if the slot was already warm, this means additional cost
+  of =100= gas alongside the same unnecessary stack operations and
+  extra deploy time costs.
+- [[https://blog.soliditylang.org/2021/04/21/custom-errors][Custom errors]] from =0.8.4=, leads to cheaper deploy time cost and
+  run time cost. Note: the run time cost is only relevant when the
+  revert condition is met. In short, replace revert strings by
+  custom errors.
+
+---
+
+### Tip: 5. Caching the length in for loops:
+
+Example:
 
 ```solidity
+// SPDX-License-Identifier: UNLICENSED
+pragma solidity ^0.8.13;
 
+contract Array {
+    uint256[10] public number;
+
+    ///@notice Looping over a storage array: Without cache
+    function loop1() public view {
+        for (uint256 i; i < number.length;) {
+            ++i;
+        }
+    }
+
+    ///@notice Looping over a storage array with cached length outside of the loop
+    function loop2() public view {
+        uint256 length = number.length;
+        for (uint256 i; i < length;) {
+            ++i;
+        }
+    }
+
+    ///@notice Looping over a memory array without cached length
+    function loop3() public pure {
+        uint256[] memory num1 = new uint256[](10);
+        for (uint256 i; i < num1.length;) {
+            ++i;
+        }
+    }
+
+    ///@notice Looping over a storage array with cached length outside of the loop
+    function loop4() public pure {
+        uint256[] memory num1 = new uint256[](10);
+        uint256 length = num1.length;
+        for (uint256 i; i < length;) {
+            ++i;
+        }
+    }
+}
 ```
+
+via_ir=false optimization=200
+![Gas Usage](/assets/image4.png)
+
+via_ir=false optimization=1000
+![Gas Usage](/assets/image5.png)
+
+via_ir=true optimization=200
+![Gas Usage](/assets/image6.png)
+
+via_ir=true optimization=1000
+![Gas Usage](/assets/image7.png)
+
+---
+
+### References:
+
+https://gist.github.com/hrkrshnn/ee8fabd532058307229d65dcd5836ddc <br>
+https://forum.openzeppelin.com/t/a-collection-of-gas-optimisation-tricks/19966
 
 ---
 
