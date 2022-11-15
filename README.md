@@ -30,11 +30,12 @@ contract Tip1 {
 
 ---
 
-### Tip 2. Cache frequently used Storage variable.
+### Tip 2. Cache frequently used Storage variable, Mapping Structs
 
-- Description: If there's a state variable you'll read from more than once in a function, it's best to cast it into memory.
-  So, instead of foo1() use foo2():
-  [Tip2.sol]()
+Caching a mapping’s value in a local storage variable when the value is accessed multiple times, saves ~42 gas per access due to not having to recalculate the key’s keccak256 hash (Gkeccak256 - 30 gas) and that calculation’s associated stack operations. Caching an array’s struct avoids recalculating the array offsets into memory)
+
+So, instead of foo1() use foo2():
+[Tip2.sol]()
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -220,7 +221,7 @@ Notice through the sample code the effects of turning on IR
 
 ---
 
-### Tip 8: Consider using custom errors instead of revert strings
+### Tip 8: Consider using custom errors instead of revert strings.
 
 Solidity 0.8.4 introduced custom errors. They are more gas efficient than revert strings, when it comes to deploy cost as well as runtime cost when the revert condition is met. Use custom errors instead of revert strings for gas savings.
 
@@ -249,41 +250,59 @@ via_ir=true optimization=200
 
 ---
 
+### Tip 10: Use short revert strings.
+
+---
+
+### Tip 11: Use bytes32 rather string/bytes (fixed sizes are always cheaper).
+
+---
+
+### Tip 12: Function modifiers can be inefficient
+
+---
+
+### Tip 13: No need to initialize variables with default values
+
+---
+
+### Tip 14: Avoid repetitive checks eg using safe math library
+
+---
+
+### Tip 15: Using `private` visibility rather than `public` for constants
+
+If needed, the value can be read from the verified contract source code. Savings are due to the compiler not having to create non-payable getter functions for deployment calldata, and not adding another entry to the method ID table)
+
+### Tip 16: Usage of UINT/INTS smaller than 32 bytes (256 bits) incurs overhead
+
+When using elements that are smaller than 32 bytes, your contract’s gas usage may be higher. This is because the EVM operates on 32 bytes at a time. Therefore, if the element is smaller than that, the EVM must use more operations in order to reduce the size of the element from 32 bytes to the desired size.)
+
+### Tip 17. ++I costs less gas than I++, especially when It's used in for-loops
+
+### Tip 18. Calling internal functions is cheaper
+
+### Tip 19. Calling internal functions is cheaper
+
+### Tip 20. uint\*(8/16/32..) vs uint256
+
+TheEVM run on 256 bits at a time thus using a unit\* it will firs be converted to unt256 and it cost extra gas)
+
+### Tip 21. AVOID CONTRACT EXISTENCE CHECKS BY USING SOLIDITY VERSION 0.8.10 OR LATER
+
+Prior to 0.8.10 the compiler inserted extra code, including EXTCODESIZE (700 gas), to check for contract existence for external calls. In more recent solidity versions, the compiler will not insert these checks if the external call has a return value)
+
+### Tip 21. Using ``boolean` for storage incurs overhead
+
+Booleans are more expensive than uint256 or any type that takes up a full
+// word because each write operation emits an extra SLOAD to first read the
+// slot's contents, replace the bits taken up by the boolean, and then write
+// back. This is the compiler's defense against contract upgrades and
+// pointer aliasing, and it cannot be disabled.) (Use uint256(1) and uint256(2) for true/false to avoid a Gwarmaccess (100 gas) for the extra SLOAD, and to avoid Gsset (20000 gas) when changing from ‘false’ to ‘true’, after having been ‘true’ in the past)
+
 ### References:
 
 https://gist.github.com/hrkrshnn/ee8fabd532058307229d65dcd5836ddc <br>
 https://forum.openzeppelin.com/t/a-collection-of-gas-optimisation-tricks/19966
 
 ---
-
-Gas report:
-
-2. Use bytes32 rather than string/bytes(Fixed Size)
-
-3. Function modifiers can be inefficient
-
-4. No need to initialize variables with default values
-
-5. Use short reason stings.(Every reason string takes at least 32 bytes so make sure your string fits in 32 bytes or it will become more expensive.)
-
-6. Avoid repetitive checks eg using safe math library
-
-7. Calling internal functions is cheaper
-
-8. uint* vs uint256 (TheEVM run on 256 bits at a time thus using a unit* it will firs be converted to unt256 and it cost extra gas)
-
-9. AVOID CONTRACT EXISTENCE CHECKS BY USING SOLIDITY VERSION 0.8.10 OR LATER (Prior to 0.8.10 the compiler inserted extra code, including EXTCODESIZE (700 gas), to check for contract existence for external calls. In more recent solidity versions, the compiler will not insert these checks if the external call has a return value)
-
-10. MULTIPLE ACCESSES OF A MAPPING/ARRAY SHOULD USE A LOCAL VARIABLE CACHE (Caching a mapping’s value in a local storage variable when the value is accessed multiple times, saves ~42 gas per access due to not having to recalculate the key’s keccak256 hash (Gkeccak256 - 30 gas) and that calculation’s associated stack operations. Caching an array’s struct avoids recalculating the array offsets into memory)
-
-11. USING BOOLS FOR STORAGE INCURS OVERHEAD(Booleans are more expensive than uint256 or any type that takes up a full
-    // word because each write operation emits an extra SLOAD to first read the
-    // slot's contents, replace the bits taken up by the boolean, and then write
-    // back. This is the compiler's defense against contract upgrades and
-    // pointer aliasing, and it cannot be disabled.) (Use uint256(1) and uint256(2) for true/false to avoid a Gwarmaccess (100 gas) for the extra SLOAD, and to avoid Gsset (20000 gas) when changing from ‘false’ to ‘true’, after having been ‘true’ in the past)
-
-12. ++I COSTS LESS GAS THAN I++, ESPECIALLY WHEN IT’S USED IN FOR-LOOPS
-
-13. USAGE OF UINTS/INTS SMALLER THAN 32 BYTES (256 BITS) INCURS OVERHEAD (When using elements that are smaller than 32 bytes, your contract’s gas usage may be higher. This is because the EVM operates on 32 bytes at a time. Therefore, if the element is smaller than that, the EVM must use more operations in order to reduce the size of the element from 32 bytes to the desired size.)
-
-14. USING PRIVATE RATHER THAN PUBLIC FOR CONSTANTS, SAVES GAS (If needed, the value can be read from the verified contract source code. Savings are due to the compiler not having to create non-payable getter functions for deployment calldata, and not adding another entry to the method ID table)
