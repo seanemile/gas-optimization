@@ -33,23 +33,75 @@ contract Tip1 {
 ### Tip 2. Cache frequently used Storage variable.
 
 - Description: If there's a state variable you'll read from more than once in a function, it's best to cast it into memory.
-  So, instead of:
+  So, instead of foo1() use foo2():
+  [Tip2.sol]()
 
 ```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity 0.8.17;
+contract Tip2 {
+    uint256 public variable1 = 5;
+    mapping(uint256 => uint256) public variable2;
 
+    function foo1(uint256 someNum) external {
+        variable2[variable1] = someNum;
+    }
+
+    function foo2(uint256 someNum) external {
+        uint256 tempBar = variable1; // tempBar is in memory and cheaper to read from
+        variable2[variable1] = someNum;
+    }
+}
 ```
+
+![Gas Usage](/assets/image1.png).
 
 ---
 
-## Tip: Cache array length outside of loop
+### Tip 3. Declare Constructor as payable.
 
-Description: If array length is not cached outside loop, the solidity compiler will always read the length of the array during each iteration. That is, if it is a storage array, this is an extra sload operation (100 additional extra gas for each iteration except for the first) and if it is a memory array, this is an extra mload operation (3 additional gas for each iteration except for the first).
+- Description: You eliminate the payable check. Saving gas during deployment.
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity 0.8.17;
+contract Tip3a {
+    uint256 public variable1;
+
+    constructor() payable {
+        variable1 = 5;
+    }
+}
+```
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity 0.8.17;
+contract Tip3b {
+    uint256 public variable1;
+
+    constructor() {
+        variable1 = 5;
+    }
+}
+```
+
+![Gas Usage](/assets/image2.png).
+![Gas Usage](/assets/image3.png).
+
+---
+
+### Tip: 4. Upgrade at least 0.8.4
+
+Description:
 
 Proof of Concept:
 
 ```solidity
 
 ```
+
+---
 
 Gas report:
 
