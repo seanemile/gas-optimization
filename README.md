@@ -179,6 +179,41 @@ via_ir=true optimization=1000
 
 ---
 
+### Tip 6: Use calldata instead of memory for function parameters
+
+Gas savings: In the former example, the ABI decoding begins with copying value from calldata to memory in a for loop. Each iteration would cost at least 60 gas. In the latter example, this can be completely avoided. This will also reduce the number of instructions and therefore reduces the deploy time cost of the contract.
+
+```solidity
+
+// SPDX-License-Identifier: MIT
+
+pragma solidity 0.8.17;
+
+contract Tip6 {
+    function add1(uint256[] memory arr) external pure returns (uint256 sum) {
+        uint256 length = arr.length;
+        for (uint256 i = 0; i < length; i++) {
+            sum += arr[i];
+        }
+    }
+
+    function add2(uint256[] calldata arr) external pure returns (uint256 sum) {
+        uint256 length = arr.length;
+        for (uint256 i = 0; i < length; i++) {
+            sum += arr[i];
+        }
+    }
+}
+```
+
+via_ir=false optimization=200
+![Gas Usage](/assets/image9.png)
+
+via_ir=true optimization=200
+![Gas Usage](/assets/image8.png)
+
+---
+
 ### References:
 
 https://gist.github.com/hrkrshnn/ee8fabd532058307229d65dcd5836ddc <br>

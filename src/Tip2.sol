@@ -12,6 +12,6 @@ contract Tip2 {
 
     function foo2(uint256 someNum) external {
         uint256 tempBar = variable1; // tempBar is in memory and cheaper to read from
-        variable2[variable1] = someNum;
+        variable2[tempBar] = someNum;
     }
 }
