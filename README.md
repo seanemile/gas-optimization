@@ -1,4 +1,36 @@
-## Gas Optimization by example:
+Gas Optimization by example:
+
+Table of content
+- [Tip 1. Use smaller types than uint256 and Pack your variables!](#tip-1-use-smaller-types-than-uint256-and-pack-your-variables)
+- [Tip 2. Cache frequently used Storage variable, Mapping Structs](#tip-2-cache-frequently-used-storage-variable-mapping-structs)
+- [Tip 3. Declare Constructor as payable.](#tip-3-declare-constructor-as-payable)
+- [Tip: 4. Upgrade at least 0.8.4](#tip-4-upgrade-at-least-084)
+- [Tip: 5. Caching the length in for loops:](#tip-5-caching-the-length-in-for-loops)
+- [Tip 6: Use calldata instead of memory for function arguments that don't get mutated](#tip-6-use-calldata-instead-of-memory-for-function-arguments-that-dont-get-mutated)
+- [Tip 7: Use IR(yul) compiler pipeline](#tip-7-use-iryul-compiler-pipeline)
+- [Tip 8: Consider using custom errors instead of revert strings.](#tip-8-consider-using-custom-errors-instead-of-revert-strings)
+- [Tip 9: Use immutable State variables where applicable](#tip-9-use-immutable-state-variables-where-applicable)
+- [Tip 10: Use short revert strings.](#tip-10-use-short-revert-strings)
+- [Tip 11: Use bytes32 rather string/bytes (fixed sizes are always cheaper).](#tip-11-use-bytes32-rather-stringbytes-fixed-sizes-are-always-cheaper)
+- [Tip 12: Function modifiers can be inefficient](#tip-12-function-modifiers-can-be-inefficient)
+- [Tip 13: No need to initialize variables with default values](#tip-13-no-need-to-initialize-variables-with-default-values)
+- [Tip 14: Avoid repetitive checks eg using safe math library](#tip-14-avoid-repetitive-checks-eg-using-safe-math-library)
+- [Tip 15: Using `private` visibility rather than `public` for constants](#tip-15-using-private-visibility-rather-than-public-for-constants)
+- [Tip 16: Usage of UINT/INTS smaller than 32 bytes (256 bits) incurs overhead](#tip-16-usage-of-uintints-smaller-than-32-bytes-256-bits-incurs-overhead)
+- [Tip 17. ++I costs less gas than I++, especially when It's used in for-loops](#tip-17-i-costs-less-gas-than-i-especially-when-its-used-in-for-loops)
+- [Tip 18.](#tip-18)
+- [Tip 19. Calling internal functions is cheaper](#tip-19-calling-internal-functions-is-cheaper)
+- [Tip 20. uint\*(8/16/32..) vs uint256](#tip-20-uint81632-vs-uint256)
+- [Tip 21. AVOID CONTRACT EXISTENCE CHECKS BY USING SOLIDITY VERSION 0.8.10 OR LATER](#tip-21-avoid-contract-existence-checks-by-using-solidity-version-0810-or-later)
+- [Tip 22. Using \`\`boolean\` for storage incurs overhead](#tip-22-using-boolean-for-storage-incurs-overhead)
+- [Tip 23. The increment in for loop post condition can be made unchecked](#tip-23-the-increment-in-for-loop-post-condition-can-be-made-unchecked)
+- [Tip 24: external functions are cheaper than public:](#tip-24-external-functions-are-cheaper-than-public)
+- [Tip 25: Mapping vs Array](#tip-25-mapping-vs-array)
+- [Tip 26: Avoid redundant operations](#tip-26-avoid-redundant-operations)
+- [Tip 27: Freeing storage](#tip-27-freeing-storage)
+- [Tip 28: Use assembly to check for address(0)](#tip-28-use-assembly-to-check-for-address0)
+- [References:](#references)
+
 
 ---
 
@@ -299,7 +331,7 @@ When using elements that are smaller than 32 bytes, your contract’s gas usage 
 
 ---
 
-### Tip 18. Calling internal functions is cheaper
+### Tip 18.
 
 ---
 
