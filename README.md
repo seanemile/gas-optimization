@@ -416,6 +416,8 @@ delete the variables on the Storage, using the
 keyword delete, as soon as they are no longer
 necessary.
 
+### Tip 28: Use assembly to check for address(0)
+
 ### References:
 
 https://gist.github.com/hrkrshnn/ee8fabd532058307229d65dcd5836ddc <br>
