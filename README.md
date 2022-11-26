@@ -180,7 +180,7 @@ via_ir=true optimization=1000
 
 ---
 
-### Tip 6: Use calldata instead of memory for function parameters
+### Tip 6: Use calldata instead of memory for function arguments that don't get mutated
 
 Gas savings: In the former example, the ABI decoding begins with copying value from calldata to memory in a for loop. Each iteration would cost at least 60 gas. In the latter example, this can be completely avoided. This will also reduce the number of instructions and therefore reduces the deploy time cost of the contract.
 
@@ -260,9 +260,22 @@ via_ir=true optimization=200
 
 ### Tip 12: Function modifiers can be inefficient
 
+The code of modifiers is inlined inside the
+modified function, thus adding up size and
+costing gas.
+Limit the modifiers. Internal functions are not
+inlined, but called as separate functions. They
+are slightly more expensive at run time, but
+save a lot of redundant bytecode in
+deployment, if used more than once
+
 ---
 
 ### Tip 13: No need to initialize variables with default values
+
+In Solidity, all variables are set to zeroes by
+default. So, do not explicitly initialize a
+variable with its default value if it is zero.
 
 ---
 
@@ -292,11 +305,29 @@ When using elements that are smaller than 32 bytes, your contract’s gas usage 
 
 ### Tip 19. Calling internal functions is cheaper
 
+Calling public functions is more expensive than
+calling internal functions, because in the former
+case all the parameters are copied into Memory.
+
+Whenever possible, prefer internal function
+calls, where the parameters are passed as
+references.
+
 ---
 
 ### Tip 20. uint\*(8/16/32..) vs uint256
 
 TheEVM run on 256 bits at a time thus using a unit\* it will firs be converted to unt256 and it cost extra gas)
+
+The EVM run on 256 bits at a time, thus using
+an uint\* (unsigned integers smaller than 256
+bits), it will first be converted to uint256 and it
+costs extra gas.
+
+Use unsigned integers smaller or equal than
+128 bits when packing more variables in one
+slot (see Variables Packing pattern). If not, it
+is better to use uint256 variables.
 
 ---
 
@@ -306,7 +337,7 @@ Prior to 0.8.10 the compiler inserted extra code, including EXTCODESIZE (700 gas
 
 ---
 
-### Tip 21. Using ``boolean` for storage incurs overhead
+### Tip 22. Using ``boolean` for storage incurs overhead
 
 Booleans are more expensive than uint256 or any type that takes up a full
 // word because each write operation emits an extra SLOAD to first read the
@@ -316,7 +347,7 @@ Booleans are more expensive than uint256 or any type that takes up a full
 
 ---
 
-### Tip 22. The increment in for loop post condition can be made unchecked
+### Tip 23. The increment in for loop post condition can be made unchecked
 
 (This is only relevant if you are using the default solidity checked arithmetic.)
 
@@ -341,6 +372,49 @@ return i + 1;
 Note that it’s important that the call to unchecked_inc is inlined. This is only possible for solidity versions starting from 0.8.2.
 
 Gas savings: roughly speaking this can save 30-40 gas per loop iteration. For lengthy loops, this can be significant!
+
+---
+
+### Tip 24: external functions are cheaper than public:
+
+The input parameters of public functions are
+copied to memory automatically, and this costs
+gas.
+
+The input parameters of external functions are
+read right from Calldata memory. Therefore,
+explicitly mark as external functions called
+only externally
+
+### Tip 25: Mapping vs Array
+
+Solidity provides only two data types to
+represents list of data: arrays and maps.
+Mappings are cheaper, while arrays are
+packable and iterable
+
+In order to save gas, it is recommended to use
+mappings to manage lists of data, unless there
+is a need to iterate or it is possible to pack data
+types. This is useful both for Storage and
+Memory. You can manage an ordered list with
+a mapping using an integer index as a key
+
+### Tip 26: Avoid redundant operations
+
+Avoid redundant operations. For instance,
+avoid double checks; the use of SafeMath
+library prevents underflow and overflow, so
+there is no need to check for them.
+
+### Tip 27: Freeing storage
+
+To help keeping the size of the blockchain
+smaller, you get a gas refund every time you
+free the Storage. Therefore, it is convenient to
+delete the variables on the Storage, using the
+keyword delete, as soon as they are no longer
+necessary.
 
 ### References:
 
