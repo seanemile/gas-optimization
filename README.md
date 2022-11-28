@@ -1,6 +1,6 @@
 <div>
   <h2>Installation</h2>
-  <p> This is a companion repo for the articles gas <a href="https://seanemile.com/home"> opimization in solidity</a></p> 
+  <p> This is a companion repo for the articles gas <a href="https://seanemile.com/home"> optimization in solidity</a></p> 
   <h3>SetUp:</h3>
   <p>
     You will need a copy of
