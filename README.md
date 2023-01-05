@@ -7,7 +7,7 @@ Table of content:
   - [GAS-2: Cache frequently used Storage variable, Mapping Structs](#gas-2-cache-frequently-used-storage-variable-mapping-structs)
   - [GAS-3: Declare Constructor as payable.](#gas-3-declare-constructor-as-payable)
   - [GAS-4: Upgrade at least 0.8.4](#gas-4-upgrade-at-least-084)
-  - [GAS-5: Caching the length in for loops:](#gas-5-caching-the-length-in-for-loops)
+  - [GAS-5: Caching array length outside of loop.](#gas-5-caching-array-length-outside-of-loop)
   - [GAS-6: Use calldata instead of memory for function arguments that don't get mutated](#gas-6-use-calldata-instead-of-memory-for-function-arguments-that-dont-get-mutated)
   - [GAS-7: Use IR(yul) compiler pipeline](#gas-7-use-iryul-compiler-pipeline)
   - [GAS-8: Consider using custom errors instead of revert strings.](#gas-8-consider-using-custom-errors-instead-of-revert-strings)
@@ -31,6 +31,7 @@ Table of content:
   - [GAS-26: Avoid redundant operations](#gas-26-avoid-redundant-operations)
   - [GAS-27: Freeing storage](#gas-27-freeing-storage)
   - [GAS-28: Use assembly to check for address(0)](#gas-28-use-assembly-to-check-for-address0)
+  - [GAS-29 Use != 0 instead of \> 0 for unsigned integer comparison](#gas-29-use--0-instead-of--0-for-unsigned-integer-comparison)
   - [References](#references)
 
 # Installation
@@ -79,6 +80,8 @@ $ forge snapshot
 ## GAS-2: Cache frequently used Storage variable, Mapping Structs
 <!--GAS-2 Tip -->
 - Description: Cache a mapping's value in a local storage variable when the value is accessed multiple times, saves ~42 gas per access due to not having to recalculate the key's keccak256 hash (Gkeccak256 - 30 gas) and that calculation's associated stack operations. Caching an array's struct avoids recalculating the array offsets into memory)
+
+- Storage variable:The instances below point to the second+ access of a state variable within a function. Caching of a state variable replaces each Gwarmaccess (100 gas) with a much cheaper stack read. Other less obvious fixes/optimizations include having local memory caches of state variable structs, or having local caches of state variable contracts/addresses.
 - Example: [Tip2.sol](https://github.com/seanemile/gas-optimization/blob/main/src/Tip2.sol)
 
 ```solidity
@@ -134,52 +137,13 @@ $ forge snapshot
 3. [[https://blog.soliditylang.org/2021/04/21/custom-errors][Custom errors]] from =0.8.4=, leads to cheaper deploy time cost and run time cost. Note: the run time cost is only relevant when the revert condition is met. In short, replace revert strings by custom errors.
 
      
-## GAS-5: Caching the length in for loops:
+## GAS-5: Caching array length outside of loop.
 <!--GAS-5 Tip -->
+- Description If not cached, the solidity compiler will always read the length of the array during each iteration. That is, if it is a storage array, this is an extra sload operation (100 additional extra gas for each iteration except for the first) and if it is a memory array, this is an extra mload operation (3 additional gas for each iteration except for the first).
 - Example
 ```solidity
-    // SPDX-License-Identifier: MIT
-    pragma solidity ^0.8.13;
-    contract Array {;
-      uint256[10] public number;
-      ///@notice Looping over a storage array: Without cache
-
-      function loop1() public view {;
-        for (uint256 i; i < number.length;) {;
-         ++i;
-        };
-      {;
-      ///@notice Looping over a storage array with cached length outside of the loop
-
-      function loop2() public view {;
-        uint256 length = number.length;
-        for (uint256 i; i < length;) {;
-         ++i;
-        };
-      };
-
-      ///@notice Looping over a memory array without cached length
-      function loop3() public pure {;
-        uint256[] memory num1 = new uint256[](10);
-        for (uint256 i; i < num1.length;) {;
-          ++i;
-        };
-      };
-
-      ///@notice Looping over a memory array with cached length outside of the loop
-      function loop4() public pure {;
-        uint256[] memory num1 = new uint256[](10);
-        uint256 length = num1.length;
-        for (uint256 i; i < length;) {;
-         ++i;
-        };
-      };
-    };
+  for (uint i = 0; i < dest.length;)
 ```
-via_ir=false optimization=200
-via_ir=false optimization=1000
-via_ir=true optimization=200
-via_ir=true optimization=1000
 ## GAS-6: Use calldata instead of memory for function arguments that don't get mutated
 <!--GAS-6 Tip -->
 - Description: Gas savings: In the former example, the ABI decoding begins with copying value from calldata to memory in a for loop. Each iteration would cost at least 60 gas. In the latter example, this can be completely avoided. This will also reduce the number of instructions and therefore reduces the deploy time cost of the contract.
@@ -215,7 +179,7 @@ Description: Notice through the sample code the effects of turning on IR ---
 
 ## GAS-8: Consider using custom errors instead of revert strings.
 <!--GAS-8 Tip -->
-- Description: Solidity 0.8.4 introduced custom errors. They are more gas efficient than revert strings, when it comes to deploy cost as well as runtime cost when the revert condition is met. Use custom errors instead of revert strings for gas savings.
+- Description: Solidity 0.8.4 introduced custom errors. They are more gas efficient than revert strings, when it comes to deploy cost as well as runtime cost when the revert condition is met. Use custom errors instead of revert strings for gas savings.[source](https://blog.soliditylang.org/2021/04/21/custom-errors/)
      
 ## GAS-9: Use immutable State variables where applicable
 <!--GAS-9 Tip -->
@@ -279,8 +243,7 @@ via_ir=true optimization=200
 
 ## GAS-22: Using ``boolean` for storage incurs overhead
 <!--GAS-22 Tip -->
-- Description: Booleans are more expensive than uint256 or any type that takes up a full // word because each write operation emits an extra SLOAD to first read the // slot's contents, replace the bits taken up by the boolean, and then write // back. This is the compiler's defense against contract upgrades and // pointer aliasing, and it cannot be disabled.) (Use uint256(1) and uint256(2) for true/false to avoid a Gwarmaccess (100 gas) for the extra SLOAD, and to avoid Gsset (20000 gas) when changing from 'false' to 'true', after having been 'true' in the past) ---
-     
+- Description: Booleans are more expensive than uint256 or any type that takes up a full // word because each write operation emits an extra SLOAD to first read the // slot's contents, replace the bits taken up by the boolean, and then write // back. This is the compiler's defense against contract upgrades and // pointer aliasing, and it cannot be disabled.) (Use uint256(1) and uint256(2) for true/false to avoid a Gwarmaccess (100 gas) for the extra SLOAD, and to avoid Gsset (20000 gas) when changing from 'false' to 'true', after having been 'true' in the past) [source](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/58f635312aa21f947cae5f8578638a85aa2519f5/contracts/security/ReentrancyGuard.sol#L23-L27) 
 ## GAS-23: The increment in for loop post condition can be made unchecked
 <!--GAS-23 Tip -->
 - Description: (This is only relevant if you are using the default solidity checked arithmetic.) Consider the following generic for loop:
@@ -320,7 +283,13 @@ via_ir=true optimization=200
 
 ## GAS-28: Use assembly to check for address(0)
 <!--GAS-28 Tip -->
+## GAS-29 Use != 0 instead of > 0 for unsigned integer comparison	
+<!--GAS-29 Tip -->
+// first find map = h[2]
+mapLoc = arrLocation(9, 2, 1);  // h is at slot 9
 
+// then find map[456]
+itemLoc = mapLocation(mapLoc, 456);
 ## References 
 <!--References:  -->
 - https://gist.github.com/hrkrshnn/ee8fabd532058307229d65dcd5836ddc
