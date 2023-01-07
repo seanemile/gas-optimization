@@ -9,7 +9,7 @@ Table of content:
   - [GAS-4: Upgrade at least 0.8.4](#gas-4-upgrade-at-least-084)
   - [GAS-5: Caching array length outside of loop.](#gas-5-caching-array-length-outside-of-loop)
   - [GAS-6: Use calldata instead of memory for function arguments that don't get mutated](#gas-6-use-calldata-instead-of-memory-for-function-arguments-that-dont-get-mutated)
-  - [GAS-7: Use IR(yul) compiler pipeline](#gas-7-use-iryul-compiler-pipeline)
+  - [GAS-7: Use Solidity IR-based Codegen compiler pipeline.](#gas-7-use-solidity-ir-based-codegen-compiler-pipeline)
   - [GAS-8: Consider using custom errors instead of revert strings.](#gas-8-consider-using-custom-errors-instead-of-revert-strings)
   - [GAS-9: Use immutable State variables where applicable](#gas-9-use-immutable-state-variables-where-applicable)
   - [GAS-10: Use short revert strings.](#gas-10-use-short-revert-strings)
@@ -21,7 +21,7 @@ Table of content:
   - [GAS-16: Usage of UINT/INTS smaller than 32 bytes (256 bits) incurs overhead](#gas-16-usage-of-uintints-smaller-than-32-bytes-256-bits-incurs-overhead)
   - [GAS-17: ++i costs less gas than i++, especially when It's used in for-loops.(--i/i-- too)](#gas-17-i-costs-less-gas-than-i-especially-when-its-used-in-for-loops--ii---too)
   - [GAS-18: array\[index\] += amount is cheaper than array\[index\] = array\[index\] + amount (or related variants)](#gas-18-arrayindex--amount-is-cheaper-than-arrayindex--arrayindex--amount-or-related-variants)
-  - [GAS-19: Calling internal functions is cheaper](#gas-19-calling-internal-functions-is-cheaper)
+  - [GAS-19 Use != 0 instead of \> 0 for unsigned integer comparison](#gas-19-use--0-instead-of--0-for-unsigned-integer-comparison)
   - [GAS-20: uint\*(8/16/32..) vs uint256](#gas-20-uint81632-vs-uint256)
   - [GAS-21: Avoid contract existence checks by using version 0.8.10 or Later](#gas-21-avoid-contract-existence-checks-by-using-version-0810-or-later)
   - [GAS-22: Using \`\`boolean\` for storage incurs overhead](#gas-22-using-boolean-for-storage-incurs-overhead)
@@ -31,7 +31,6 @@ Table of content:
   - [GAS-26: Avoid redundant operations](#gas-26-avoid-redundant-operations)
   - [GAS-27: Freeing storage](#gas-27-freeing-storage)
   - [GAS-28: Use assembly to check for address(0)](#gas-28-use-assembly-to-check-for-address0)
-  - [GAS-29 Use != 0 instead of \> 0 for unsigned integer comparison](#gas-29-use--0-instead-of--0-for-unsigned-integer-comparison)
   - [References](#references)
 
 # Installation
@@ -88,7 +87,7 @@ $ forge snapshot
 ```
 
 | contracts/contract/Storage.sol:Storage contract |                 |       |        |       |         |
-|-------------------------------------------------|-----------------|-------|--------|-------|---------|
+| ----------------------------------------------- | --------------- | ----- | ------ | ----- | ------- |
 | Deployment Cost                                 | Deployment Size |       |        |       |         |
 | 1091309                                         | 5416            |       |        |       |         |
 | Function Name                                   | min             | avg   | median | max   | # calls |
@@ -172,9 +171,9 @@ $ forge snapshot
 via_ir=false optimization=200
 via_ir=true optimization=200
      
-## GAS-7: Use IR(yul) compiler pipeline
+## GAS-7: Use Solidity IR-based Codegen compiler pipeline.
 <!--GAS-7 Tip -->
-Description: Notice through the sample code the effects of turning on IR ---
+Description: The IR-based code generator was introduced with an aim to not only allow code generation to be more transparent and auditable but also to enable more powerful optimization passes that span across functions.
      
 
 ## GAS-8: Consider using custom errors instead of revert strings.
@@ -229,10 +228,8 @@ via_ir=true optimization=200
 ## GAS-18: array[index] += amount is cheaper than array[index] = array[index] + amount (or related variants)
 <!--GAS-18 Tip -->
 
-## GAS-19: Calling internal functions is cheaper
+## GAS-19 Use != 0 instead of > 0 for unsigned integer comparison	
 <!--GAS-19 Tip -->
-- Description: Calling public functions is more expensive than calling internal functions, because in the former case all the parameters are copied into Memory. Whenever possible, prefer internal function calls, where the parameters are passed as references.
-
 ## GAS-20: uint\*(8/16/32..) vs uint256
 <!--GAS-20 Tip -->
 - Description: TheEVM run on 256 bits at a time thus using a unit\* it will firs be converted to unt256 and it cost extra gas) The EVM run on 256 bits at a time, thus using an uint\* (unsigned integers smaller than 256 bits), it will first be converted to uint256 and it costs extra gas. Use unsigned integers smaller or equal than 128 bits when packing more variables in one slot (see Variables Packing pattern). If not, it is better to use uint256 variables.
@@ -283,13 +280,7 @@ via_ir=true optimization=200
 
 ## GAS-28: Use assembly to check for address(0)
 <!--GAS-28 Tip -->
-## GAS-29 Use != 0 instead of > 0 for unsigned integer comparison	
 <!--GAS-29 Tip -->
-// first find map = h[2]
-mapLoc = arrLocation(9, 2, 1);  // h is at slot 9
-
-// then find map[456]
-itemLoc = mapLocation(mapLoc, 456);
 ## References 
 <!--References:  -->
 - https://gist.github.com/hrkrshnn/ee8fabd532058307229d65dcd5836ddc
