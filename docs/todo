@@ -1,0 +1,72 @@
+
+Gas Optimization tips:
+  ☐ GAS-1: Use smaller types than uint256 and Pack your variables!
+  ☐ GAS-2: Cache frequently used Storage variable, Mapping Structs
+  ☐ GAS-3: Declare Constructor as payable.
+  ☐ GAS-4: Upgrade at least 0.8.4
+  ☐ GAS-5: Caching array length outside of loop.
+  ☐ GAS-6: Use calldata instead of memory for function arguments that don't get mutated
+  ☐ GAS-7: Use Solidity IR-based Codegen compiler pipeline.
+  ☐ GAS-8: Consider using custom errors instead of revert strings.
+  ☐ GAS-9: Use immutable State variables where applicable
+  ☐ GAS-10: Use short revert strings.
+  ☐ GAS-11: Use bytes32 rather string/bytes (fixed sizes are always cheaper).
+  ☐ GAS-12: Function modifiers can be inefficient
+  ☐ GAS-13: No need to initialize variables with default values
+  ☐ GAS-14: Avoid repetitive checks eg using safe math library
+  ☐ GAS-15: Using `private` visibility rather than `public` for constants
+  ☐ GAS-16: Usage of UINT/INTS smaller than 32 bytes (256 bits) incurs overhead
+  ☐ GAS-17: ++i costs less gas than i++, especially when It's used in for-loops.(--i/i-- too)
+  ☐ GAS-18: array\[index\] += amount is cheaper than array\[index\] = array\[index\] + amount (or related variants)
+  ☐ GAS-19 Use != 0 instead of \> 0 for unsigned integer comparison
+  ☐ GAS-20: Use assembly to check for address(0)
+  ☐ GAS-21: Avoid contract existence checks by using version 0.8.10 or Later
+  ☐ GAS-22: Using \`\`boolean\` for storage incurs overhead
+  ☐ GAS-23: The increment in for loop post condition can be made unchecked
+  ☐ GAS-24: external functions are cheaper than public:
+  ☐ GAS-25: Mapping vs Array
+  ☐ GAS-26: Avoid redundant operations
+  ☐ GAS-27: Freeing storage
+
+SWC-Registry:
+  ☐ M-1: Integer Overflow and Underflow
+  ☐ M-2: Outdated Compiler Version
+  ☐ M-3: Floating Pragma
+  ☐ M-4: Unchecked Call Return Value,
+  ☐ M-5: Unprotected Ether Withdrawal,
+  ☐ M-6: Unprotected SELFDESTRUCT Instruction,
+  ☐ M-7: Reentrancy,
+  ☐ M-8: State Variable Default Visibility
+  ☐ M-9: Uninitialized Storage Pointer
+  ☐ M-10: Assert Violation
+  ☐ M-11: Use of Deprecated Solidity Functions
+  ☐ M-12: Delegatecall to Untrusted Callee
+  ☐ M-13: DoS with Failed Call
+  ☐ M-14: Transaction Order Dependence
+  ☐ M-15: Authorization through tx.origin
+  ☐ M-16: Block values as a proxy for time
+  ☐ M-17: Signature Malleability
+  ☐ M-18: Incorrect Constructor Name
+  ☐ M-19: Shadowing State Variables
+  ☐ M-20: Weak Sources of Randomness from Chain Attributes
+  ☐ M-21: Missing Protection against Signature Replay Attacks
+  ☐ M-22: Lack of Proper Signature Verification
+  ☐ M-23: Requirement Violation
+  ☐ M-24: Write to Arbitrary Storage Location
+  ☐ M-25: Incorrect Inheritance Order
+  ☐ M-26: Insufficient Gas Griefing
+  ☐ M-27: Arbitrary Jump with Function Type Variable
+  ☐ M-28: DoS With Block Gas Limit
+  ☐ M-29: Typographical Error
+  ☐ M-30: Right-To-Left-Override control character (U+202E)
+  ☐ M-31: Presence of unused variables
+  ☐ M-32: Unexpected Ether balance
+  ☐ M-33: Hash Collisions With Multiple Variable Length Arguments
+  ☐ M-34: Message call with hardcoded gas amount
+  ☐ M-35:Code With No Effects
+  ☐ M-36: Unencrypted Private Data On-Chain
+  ☐ M-37: require() / revert() statements should have descriptive reason strings
+  ☐ M-38: Event is missing indexed fields
+  ☐ M-39: Constants should be defined rather than using magic numbers
+  ☐ M-40: Return values of approve() not checked
+  ☐ M-41 Centralization Risk for trusted owners
