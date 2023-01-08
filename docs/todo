@@ -37,7 +37,7 @@ SWC-Registry:
   ☐ M-6: Unprotected SELFDESTRUCT Instruction,
   ☐ M-7: Reentrancy,
   ☐ M-8: State Variable Default Visibility
-  ☐ M-9: Uninitialized Storage Pointer
+  ✔ M-9: Uninitialized Storage Pointer <Deprecated> @done(23-01-08 23:36)
   ☐ M-10: Assert Violation
   ☐ M-11: Use of Deprecated Solidity Functions
   ☐ M-12: Delegatecall to Untrusted Callee
@@ -46,10 +46,10 @@ SWC-Registry:
   ☐ M-15: Authorization through tx.origin
   ☐ M-16: Block values as a proxy for time
   ☐ M-17: Signature Malleability
-  ☐ M-18: Incorrect Constructor Name
-  ☐ M-19: Shadowing State Variables
+  ✔ M-18: Incorrect Constructor Name <deprecated> @done(23-01-08 23:35)
+  ✔ M-19: Shadowing State Variables <deprecated> @done(23-01-08 23:36)
   ☐ M-20: Weak Sources of Randomness from Chain Attributes
-  ☐ M-21: Missing Protection against Signature Replay Attacks
+  ✔ M-21: Missing Protection against Signature Replay Attacks <Deprecated> @done(23-01-08 23:36)
   ☐ M-22: Lack of Proper Signature Verification
   ☐ M-23: Requirement Violation
   ☐ M-24: Write to Arbitrary Storage Location
