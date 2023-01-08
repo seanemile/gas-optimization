@@ -22,7 +22,7 @@ Table of content:
   - [GAS-17: ++i costs less gas than i++, especially when It's used in for-loops.(--i/i-- too)](#gas-17-i-costs-less-gas-than-i-especially-when-its-used-in-for-loops--ii---too)
   - [GAS-18: array\[index\] += amount is cheaper than array\[index\] = array\[index\] + amount (or related variants)](#gas-18-arrayindex--amount-is-cheaper-than-arrayindex--arrayindex--amount-or-related-variants)
   - [GAS-19 Use != 0 instead of \> 0 for unsigned integer comparison](#gas-19-use--0-instead-of--0-for-unsigned-integer-comparison)
-  - [GAS-20: uint\*(8/16/32..) vs uint256](#gas-20-uint81632-vs-uint256)
+  - [GAS-20: Use assembly to check for address(0)](#gas-20-use-assembly-to-check-for-address0)
   - [GAS-21: Avoid contract existence checks by using version 0.8.10 or Later](#gas-21-avoid-contract-existence-checks-by-using-version-0810-or-later)
   - [GAS-22: Using \`\`boolean\` for storage incurs overhead](#gas-22-using-boolean-for-storage-incurs-overhead)
   - [GAS-23: The increment in for loop post condition can be made unchecked](#gas-23-the-increment-in-for-loop-post-condition-can-be-made-unchecked)
@@ -30,7 +30,6 @@ Table of content:
   - [GAS-25: Mapping vs Array](#gas-25-mapping-vs-array)
   - [GAS-26: Avoid redundant operations](#gas-26-avoid-redundant-operations)
   - [GAS-27: Freeing storage](#gas-27-freeing-storage)
-  - [GAS-28: Use assembly to check for address(0)](#gas-28-use-assembly-to-check-for-address0)
   - [References](#references)
 
 # Installation
@@ -220,7 +219,7 @@ via_ir=true optimization=200
 ## GAS-16: Usage of UINT/INTS smaller than 32 bytes (256 bits) incurs overhead
 <!--GAS-16 Tip -->
 
-- Description: When using elements that are smaller than 32 bytes, your contract's gas usage may be higher. This is because the EVM operates on 32 bytes at a time. Therefore, if the element is smaller than that, the EVM must use more operations in order to reduce the size of the element from 32 bytes to the desired size.)
+- Description: TheEVM run on 256 bits at a time thus using a unit\* it will firs be converted to unt256 and it cost extra gas) The EVM run on 256 bits at a time, thus using an uint\* (unsigned integers smaller than 256 bits), it will first be converted to uint256 and it costs extra gas. Use unsigned integers smaller or equal than 128 bits when packing more variables in one slot (see Variables Packing pattern). If not, it is better to use uint256 variables.
 
 ## GAS-17: ++i costs less gas than i++, especially when It's used in for-loops.(--i/i-- too)
 <!--GAS-17 Tip -->
@@ -230,9 +229,8 @@ via_ir=true optimization=200
 
 ## GAS-19 Use != 0 instead of > 0 for unsigned integer comparison	
 <!--GAS-19 Tip -->
-## GAS-20: uint\*(8/16/32..) vs uint256
+## GAS-20: Use assembly to check for address(0)
 <!--GAS-20 Tip -->
-- Description: TheEVM run on 256 bits at a time thus using a unit\* it will firs be converted to unt256 and it cost extra gas) The EVM run on 256 bits at a time, thus using an uint\* (unsigned integers smaller than 256 bits), it will first be converted to uint256 and it costs extra gas. Use unsigned integers smaller or equal than 128 bits when packing more variables in one slot (see Variables Packing pattern). If not, it is better to use uint256 variables.
      
 ## GAS-21: Avoid contract existence checks by using version 0.8.10 or Later
 <!--GAS-21 Tip -->
@@ -278,7 +276,6 @@ via_ir=true optimization=200
 <!--GAS-27 Tip -->
 - Description: To help keeping the size of the blockchain smaller, you get a gas refund every time you free the Storage. Therefore, it is convenient to delete the variables on the Storage, using the keyword delete, as soon as they are no longer necessary.
 
-## GAS-28: Use assembly to check for address(0)
 <!--GAS-28 Tip -->
 <!--GAS-29 Tip -->
 ## References 
