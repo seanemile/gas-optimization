@@ -4,7 +4,7 @@
 - Description: <Description>
 - Location: <Location>
 - Count: <Count>
-- Gas savings: <Gas savings>
+- Proof of Gas savings: <Gas savings>
 
 
 # Bug report template 
