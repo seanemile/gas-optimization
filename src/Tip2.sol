@@ -4,6 +4,9 @@ pragma solidity 0.8.17;
 
 contract Tip2 {
     uint256 public variable1;
+    string public constant variable4 = "Hello World";
+
+    // bytes32 public constant variable4 = "Hello World";
     mapping(uint256 => uint256) public variable2;
 
     constructor() payable {

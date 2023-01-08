@@ -14,6 +14,7 @@ contract Tip2Test is Test {
 
     function testTip2Foo1() public {
         tip2.foo1(2);
+        tip2.variable4();
     }
 
     function testTip2Foo2() public {
