@@ -1,6 +1,6 @@
 Tip1Test:testTip1() (gas: 27515)
-Tip2Test:testTip2Foo1() (gas: 29702)
-Tip2Test:testTip2Foo2() (gas: 29612)
+Tip2Test:testTip2Foo1() (gas: 31127)
+Tip2Test:testTip2Foo2() (gas: 29619)
 Tip2Test:testTip3() (gas: 14673)
 Tip5:testLoop1() (gas: 6407)
 Tip5:testLoop2() (gas: 6405)
