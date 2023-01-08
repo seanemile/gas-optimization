@@ -3,8 +3,12 @@
 pragma solidity 0.8.17;
 
 contract Tip2 {
-    uint256 public variable1 = 5;
+    uint256 public variable1;
     mapping(uint256 => uint256) public variable2;
+
+    constructor() payable {
+        variable1 = 5;
+    }
 
     function foo1(uint256 someNum) external {
         variable2[variable1] = someNum;

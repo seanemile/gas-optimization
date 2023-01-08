@@ -40,6 +40,7 @@ Table of content
 - [M-39: Constants should be defined rather than using magic numbers](#m-39-constants-should-be-defined-rather-than-using-magic-numbers)
 - [M-40: Return values of approve() not checked](#m-40-return-values-of-approve-not-checked)
 - [M-41 Centralization Risk for trusted owners](#m-41-centralization-risk-for-trusted-owners)
+- [M-43: Contract locking ether](#m-43-contract-locking-ether)
 
 
 ## M-1: Integer Overflow and Underflow
@@ -198,3 +199,6 @@ Table of content
 
 ## M-41 Centralization Risk for trusted owners
 - Description: The contract is owned by a single address. This address can change the contract's behavior and steal funds. The contract should be owned by a multi-sig contract or a decentralized governance mechanism.
+
+## M-43: Contract locking ether 
+- Description: Has payable function But does not have a function to withdraw the ether
