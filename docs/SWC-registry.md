@@ -38,12 +38,8 @@ Table of content
 - [M-37: require() / revert() statements should have descriptive reason strings](#m-37-require--revert-statements-should-have-descriptive-reason-strings)
 - [M-38: Event is missing indexed fields](#m-38-event-is-missing-indexed-fields)
 - [M-39: Constants should be defined rather than using magic numbers](#m-39-constants-should-be-defined-rather-than-using-magic-numbers)
-- [M-40: Functions not used internally could be marked external](#m-40-functions-not-used-internally-could-be-marked-external)
-- [M-41: Return values of approve() not checked](#m-41-return-values-of-approve-not-checked)
-- [M-42 bi.encodePacked() should not be used with dynamic types when passing the result to a hash function such as keccak256()](#m-42-biencodepacked-should-not-be-used-with-dynamic-types-when-passing-the-result-to-a-hash-function-such-as-keccak256)
-- [M-43 Unspecified compiler version](#m-43-unspecified-compiler-version)
-- [M-44 Unsafe ERC20 operation(s)](#m-44-unsafe-erc20-operations)
-- [M-45 Centralization Risk for trusted owners](#m-45-centralization-risk-for-trusted-owners)
+- [M-40: Return values of approve() not checked](#m-40-return-values-of-approve-not-checked)
+- [M-41 Centralization Risk for trusted owners](#m-41-centralization-risk-for-trusted-owners)
 
 
 ## M-1: Integer Overflow and Underflow
@@ -197,19 +193,8 @@ Table of content
 
 ## M-39: Constants should be defined rather than using magic numbers
 
-## M-40: Functions not used internally could be marked external
-
-## M-41: Return values of approve() not checked	
+## M-40: Return values of approve() not checked	
 - Description: Not all IERC20 implementations revert() when there's a failure in approve(). The function signature has a boolean return value and they indicate errors that way instead. By not checking the return value, operations that should have marked as failed, may potentially go through without actually approving anything.
 
-## M-42 bi.encodePacked() should not be used with dynamic types when passing the result to a hash function such as keccak256()
-- Description: Use abi.encode() instead which will pad items to 32 bytes, which will prevent hash collisions (e.g. abi.encodePacked(0x123,0x456) => 0x123456 => abi.encodePacked(0x1,0x23456), but abi.encode(0x123,0x456) => 0x0...1230...456). Unless there is a compelling reason, abi.encode should be preferred. If there is only one argument to abi.encodePacked() it can often be cast to bytes() or bytes32() instead. If all arguments are strings and or bytes, bytes.concat() should be used instead
-
-## M-43 Unspecified compiler version
-
-## M-44 Unsafe ERC20 operation(s)
-```solidity
-ggp.approve(address(staking), restakeAmt);
-```
-## M-45 Centralization Risk for trusted owners
+## M-41 Centralization Risk for trusted owners
 - Description: The contract is owned by a single address. This address can change the contract's behavior and steal funds. The contract should be owned by a multi-sig contract or a decentralized governance mechanism.
